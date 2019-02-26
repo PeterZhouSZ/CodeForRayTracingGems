@@ -9,19 +9,19 @@ RT_PROGRAM void intersectPatch(int prim_idx) {
 	float3 qn  = q[4];      // |        e10        |  qn = cross(q10-q00,q01-q11)
 	q00 -= ray.origin;      // q00---------------q10
 	q10 -= ray.origin;
-	float a = dot(cross(q00, ray.direction), e00); // the equation is /*\label{code:a}*/
-	float c = dot(qn, ray.direction);              // a + b u + c u^2 /*\label{code:c}*/
+	float a = dot(cross(q00, ray.direction), e00); // the equation is
+	float c = dot(qn, ray.direction);              // a + b u + c u^2
 	float b = dot(cross(q10, ray.direction), e11); // first compute a+b+c
-	b -= a + c;                                    // and then b /*\label{code:b}*/
+	b -= a + c;                                    // and then b
 	float det = b*b - 4*a*c;
 	if (det < 0) return;      // see the right part of Figure 8.5
 	det = sqrt(det);          // we -use_fast_math in CUDA_NVRTC_OPTIONS
 	float u1, u2;             // two roots (u parameter)
 	float t = ray.tmax, u, v; // need solution for the smallest t > 0  
-	if (c == 0) {                        // if c == 0, it is a trapezoid /*\label{code:t}*/
+	if (c == 0) {                        // if c == 0, it is a trapezoid
 		u1  = -a/b; u2 = -1;              // and there is only one root
 	} else {                             // (c != 0 in Stanford models)
-		u1  = (-b - copysignf(det, b))/2; // numerically "stable" root           /*\label{code:u1}*/
+		u1  = (-b - copysignf(det, b))/2; // numerically "stable" root
 		u2  = a/u1;                       // Viete's formula for u1*u2
 		u1 /= c;
 	}
@@ -38,7 +38,7 @@ RT_PROGRAM void intersectPatch(int prim_idx) {
 		}                                     // in rtPotentialIntersection
 	}
 	if (0 <= u2 && u2 <= 1) {                // it is slightly different,
-		float3 pa = lerp(q00, q10, u2);       // since u1 might be good /*\label{code:v2}*/
+		float3 pa = lerp(q00, q10, u2);       // since u1 might be good
 		float3 pb = lerp(e00, e11, u2);       // and we need 0 < t2 < t1
 		float3 n  = cross(ray.direction, pb);
 		det = dot(n, n);

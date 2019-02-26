@@ -17,4 +17,4 @@ const unsigned j = (reverse(f) >> bits) + p;
 
 // Padding pixels are ignored.
 if (j < n)
-    image[j] = render(j); @\label{lst:render:writeimage}@
+    image[j] = render(j);
